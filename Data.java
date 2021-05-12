@@ -1,5 +1,9 @@
+package src;
+
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -56,4 +60,15 @@ public class Data {
         return PURCHASER;
     }
 
+    public void output(Result result) {
+    	System.out.println("Saved data to file: (" + result.getPath() + ")");
+    	System.out.println(result.output());
+		try {
+	        FileWriter myWriter = new FileWriter(result.getPath());
+	        myWriter.write(result.output());
+	        myWriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
 }

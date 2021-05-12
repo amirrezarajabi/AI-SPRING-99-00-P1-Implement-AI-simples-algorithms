@@ -1,3 +1,4 @@
+package src;
 import java.util.ArrayList;
 
 public class Node {
@@ -119,19 +120,19 @@ public class Node {
         if(u0 != null)
             children.add(new Node(this, g - u0.getG(map), cutoff - 1, "D", u0));
         if(d0 != null)
-            children.add(new Node(this, g - u0.getG(map), cutoff - 1, "U", d0));
+            children.add(new Node(this, g - d0.getG(map), cutoff - 1, "U", d0));
         if(r0 != null)
             children.add(new Node(this, g - r0.getG(map), cutoff - 1, "L", r0));
         if(l0 != null)
             children.add(new Node(this, g - l0.getG(map), cutoff - 1, "R", l0));
         if(u1 != null)
-            children.add(new Node(this, g + u1.getG(map), cutoff - 1, "D", u1));
+            children.add(new Node(this, g - u1.getG(map), cutoff - 1, "D", u1));
         if(d1 != null)
-            children.add(new Node(this, g + d1.getG(map), cutoff - 1, "u", d1));
+            children.add(new Node(this, g - d1.getG(map), cutoff - 1, "u", d1));
         if(r1 != null)
-            children.add(new Node(this, g + r1.getG(map), cutoff - 1, "L", r1));
+            children.add(new Node(this, g - r1.getG(map), cutoff - 1, "L", r1));
         if(l1 != null)
-            children.add(new Node(this, g + l1.getG(map), cutoff - 1, "R", l1));
+            children.add(new Node(this, g - l1.getG(map), cutoff - 1, "R", l1));
         return children;
     }
 }

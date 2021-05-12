@@ -1,9 +1,6 @@
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+package src;
 import java.util.ArrayList;
-import java.util.Scanner;
+
 
 public class aStar {
     private ArrayList<Node> frontier = new ArrayList<>();
@@ -13,15 +10,36 @@ public class aStar {
     private Node target;
     private int NUM = 1;
     private double t = 0;
-    private String path;
+    private Result result;
 
-    public aStar(Data d, String path){
+    public aStar(Data d, String path) {
         data = d;
         state = new State(data.getROBOT(), data.getBUTTER());
         t = System.nanoTime();
         ASTAR();
         t = System.nanoTime() - t;
-        this.path = "src/output/"+path+".Astar";
+        if(frontier.isEmpty() && !target.isGoal(data.getMAP())){
+            result = new Result("cant pass the butter", null, -1, -1, t, path);
+        }
+        else {
+            ArrayList<String> answer = new ArrayList<>();
+            ArrayList<String> answerrev = new ArrayList<>();
+            Node n = target;
+            String solution = "";
+            while (n != null){
+                answer.add(n.getState().printMap(d.getMAP()));
+                solution += " " + n.getOrder();
+                n = n.getP();
+            }
+            char[] ans = solution.toCharArray();
+            solution = "";
+            for (int i = ans.length - 1; i >= 0; i--)
+                solution = solution + ans[i];
+            for (int i = answer.size()- 1; i >= 0; i--)
+                answerrev.add(answer.get(i));
+            result = new Result(solution, answerrev, target.getG(), target.getCutoff(), t, path);
+        }
+        data.output(result);
     }
 
     public void ASTAR(){
@@ -81,70 +99,7 @@ public class aStar {
         return frontier.get(j);
     }
 
-    public void Print() throws IOException {
-        File f1 = new File(path);
-        if(!f1.exists()) {
-            f1.createNewFile();
-        }
-        if(frontier.isEmpty() && !target.isGoal(data.getMAP())){
-            System.out.println("can't pass the butter");
-            FileWriter fileWritter = new FileWriter(f1.getName(),true);
-            BufferedWriter bw = new BufferedWriter(fileWritter);
-            bw.write("can't pass the butter\n");
-            bw.close();
-            return;
-        }
-        FileWriter fileWritter = new FileWriter(f1.getName(),true);
-        BufferedWriter bw = new BufferedWriter(fileWritter);
-        String answer = "";
-        Node n = target;
-        int s = target.getG();
-        while (n != null){
-            answer = answer + n.getOrder();
-            n = n.getP();
-        }
-        char[] revAnswer = answer.toCharArray();
-        for (int i = revAnswer.length-1; i >= 0; i--){
-            System.out.print(revAnswer[i]);
-            bw.write(revAnswer[i]);
-        }
-        System.out.println();
-        bw.write("\n");
-        System.out.println("COST: "+ target.getG());
-        bw.write("COST: "+ target.getG() + "\n");
-        System.out.println("DEPTH: " + target.getCutoff());
-        bw.write("DEPTH: " + target.getCutoff() + "\n");
-        System.out.println("Number of expanded nodes: "+ explored.size());
-        bw.write("Number of expanded nodes: "+ explored.size() + "\n");
-        System.out.println("Number of generated nodes: "+ NUM);
-        bw.write("Number of generated nodes: "+ NUM + "\n");
-        System.out.println("TIME(s): " + t/1000000000);
-        bw.write("TIME(s): " + t/1000000000 + "\n");
-        bw.close();
-    }
-
-    public void PrintMap() throws IOException {
-        File f1 = new File(path);
-        if(!f1.exists()) {
-            f1.createNewFile();
-        }
-        ArrayList<State> maps = new ArrayList<>();
-        if(frontier.isEmpty() && !target.isGoal(data.getMAP())){
-            return;
-        }
-        FileWriter fileWritter = new FileWriter(f1.getName(),true);
-        BufferedWriter bw = new BufferedWriter(fileWritter);
-        Node n = target;
-        while (n != null){
-            maps.add(n.getState());
-            n = n.getP();
-        }
-        for (int j = maps.size() - 1; j >= 0; j--) {
-            String s = maps.get(j).printMap(data.getMAP());
-            bw.write(s);
-            System.out.println("################");
-            bw.write("################\n");
-        }
-        bw.close();
+    public Result getResult() {
+        return result;
     }
 }
