@@ -1,4 +1,4 @@
-import kotlin.Pair;
+package src;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -83,19 +83,15 @@ public class State {
             for (int j = 0; j < map.get(i).length; j++) {
                 if (check(i, j)) {
                     ss = ss + map.get(i)[j] + "b ";
-                    System.out.print(map.get(i)[j] + "b ");
                 }
                 else if (ROBOT.getX() == i && ROBOT.getY() == j) {
                     ss = ss + map.get(i)[j] + "r ";
-                    System.out.print(map.get(i)[j] + "r ");
                 }
                 else {
                     ss = ss + map.get(i)[j] + " ";
-                    System.out.print(map.get(i)[j] + " ");
                 }
             }
             ss = ss + "\n";
-            System.out.println();
         }
         return ss;
     }

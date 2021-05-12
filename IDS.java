@@ -1,7 +1,4 @@
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+package src;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -15,8 +12,9 @@ public class IDS {
     private double t = 0;
     private int maxdepth;
     private String path = "";
+    private Result result;
 
-    public IDS(Data data, int maxDepth, String p){
+    public IDS(Data data, int maxDepth, String p)  {
         this.data = data;
         state = new State(data.getROBOT(), data.getBUTTER());
         Node n = new  Node(null, 0, 0, "", state);
@@ -26,7 +24,30 @@ public class IDS {
         maxdepth = maxDepth;
         runDeepSearch();
         t = System.nanoTime() - t;
-        path ="src/output/"+ p+".IDS";
+        path = p;
+        if(goal == false){
+            result = new Result("cant pass the butter", null, -1, -1, t, path);
+        }
+        else {
+            ArrayList<String> answer = new ArrayList<>();
+            ArrayList<String> answerrev = new ArrayList<>();
+            Node nn = target;
+            String solution = "";
+            while (nn != null) {
+                answer.add(nn.getState().printMap(data.getMAP()));
+                solution += " " + nn.getOrder();
+                nn = nn.getP();
+            }
+            char[] ans = solution.toCharArray();
+            solution = "";
+            for (int i = ans.length - 1; i >= 0; i--)
+                solution = solution + ans[i];
+            for (int i = answer.size() - 1; i >= 0; i--)
+                answerrev.add(answer.get(i));
+            result = new Result(solution, answerrev, target.getCutoff(), target.getCutoff(), t, path);
+        }
+        data.output(result);
+
     }
 
     public void runDeepSearch(){
@@ -65,70 +86,8 @@ public class IDS {
             }
         }
     }
-    public void Print() throws IOException {
-        File f1 = new File(path);
-        if(!f1.exists()) {
-            f1.createNewFile();
-        }
-        if(goal == false){
-            System.out.println("can't pass the butter");
-            FileWriter fileWritter = new FileWriter(f1.getName(),true);
-            BufferedWriter bw = new BufferedWriter(fileWritter);
-            bw.write("can't pass the butter\n");
-            bw.close();
-            return;
-        }
-        FileWriter fileWritter = new FileWriter(f1.getName(),true);
-        BufferedWriter bw = new BufferedWriter(fileWritter);
-        String answer = "";
-        Node n = target;
-        int s = target.getG();
-        while (n != null){
-            answer = answer + n.getOrder();
-            n = n.getP();
-        }
-        char[] revAnswer = answer.toCharArray();
-        for (int i = revAnswer.length-1; i >= 0; i--){
-            System.out.print(revAnswer[i]);
-            bw.write(revAnswer[i]);
-        }
-        System.out.println();
-        bw.write("\n");
-        System.out.println("COST: "+ target.getG());
-        bw.write("COST: "+ target.getG() + "\n");
-        System.out.println("DEPTH: " + target.getCutoff());
-        bw.write("DEPTH: " + target.getCutoff() + "\n");
-        System.out.println("Number of expanded nodes: "+ num);
-        bw.write("Number of expanded nodes: "+ num + "\n");
-        System.out.println("Number of generated nodes: "+ NUM);
-        bw.write("Number of generated nodes: "+ NUM + "\n");
-        System.out.println("TIME(s): " + t/1000000000);
-        bw.write("TIME(s): " + t/1000000000 + "\n");
-        bw.close();
-    }
 
-    public void PrintMap() throws IOException {
-        File f1 = new File(path);
-        if(!f1.exists()) {
-            f1.createNewFile();
-        }
-        if(goal == false){
-            return;
-        }
-        ArrayList<State> maps = new ArrayList<>();
-        FileWriter fileWritter = new FileWriter(f1.getName(),true);
-        BufferedWriter bw = new BufferedWriter(fileWritter);
-        Node n = target;
-        while (n != null){
-            maps.add(n.getState());
-            n = n.getP();
-        }
-        for (int j = maps.size() - 1; j >= 0; j--) {
-            String s = maps.get(j).printMap(data.getMAP());
-            bw.write(s);
-            System.out.println("################");
-            bw.write("################\n");
-        }
-        bw.close();
+    public Result getResult() {
+        return result;
     }
 }
