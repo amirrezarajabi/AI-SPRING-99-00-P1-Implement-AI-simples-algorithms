@@ -1,3 +1,4 @@
+package src;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 
@@ -127,8 +128,10 @@ public class BidirectionalBFS {
     private void finish() {
     	result.time = t;
     	result.path = path;
+    	result.expanded = explored1.size() + explored2.size();
+    	result.generated = NUM;
     	if(mres == null)
-            result = new Result("cant pass the butter", null, -1, -1, t, path);
+            result = new Result("cant pass the butter", null, -1, -1, t, path, result.expanded, NUM);
     	data.output(result);
     }
     
