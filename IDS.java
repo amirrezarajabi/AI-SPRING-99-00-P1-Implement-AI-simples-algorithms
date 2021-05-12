@@ -1,4 +1,3 @@
-package src;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -26,7 +25,7 @@ public class IDS {
         t = System.nanoTime() - t;
         path = p;
         if(goal == false){
-            result = new Result("cant pass the butter", null, -1, -1, t, path);
+            result = new Result("cant pass the butter", null, -1, -1, t, path, num, NUM);
         }
         else {
             ArrayList<String> answer = new ArrayList<>();
@@ -44,7 +43,7 @@ public class IDS {
                 solution = solution + ans[i];
             for (int i = answer.size() - 1; i >= 0; i--)
                 answerrev.add(answer.get(i));
-            result = new Result(solution, answerrev, target.getCutoff(), target.getCutoff(), t, path);
+            result = new Result(solution, answerrev, target.getCutoff(), target.getCutoff(), t, path, num, NUM);
         }
         data.output(result);
 

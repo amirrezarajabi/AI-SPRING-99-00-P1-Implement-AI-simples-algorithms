@@ -1,4 +1,3 @@
-package src;
 import java.util.ArrayList;
 
 
@@ -19,7 +18,7 @@ public class aStar {
         ASTAR();
         t = System.nanoTime() - t;
         if(frontier.isEmpty() && !target.isGoal(data.getMAP())){
-            result = new Result("cant pass the butter", null, -1, -1, t, path);
+            result = new Result("cant pass the butter", null, -1, -1, t, path, explored.size(), NUM);
         }
         else {
             ArrayList<String> answer = new ArrayList<>();
@@ -37,7 +36,7 @@ public class aStar {
                 solution = solution + ans[i];
             for (int i = answer.size()- 1; i >= 0; i--)
                 answerrev.add(answer.get(i));
-            result = new Result(solution, answerrev, target.getG(), target.getCutoff(), t, path);
+            result = new Result(solution, answerrev, target.getG(), target.getCutoff(), t, path, explored.size(), NUM);
         }
         data.output(result);
     }
